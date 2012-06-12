@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset=utf-8 />
+        <title>cRAZY bRAINSTORM</title>
+        <link rel="stylesheet" type="text/css" media="screen" href="css/master.css" />
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+        <script src="//connect.facebook.net/en_US/all.js"></script>
+        <!--[if IE]>
+        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <style>
+            ul#posts-list {
+                list-style: none;
+                padding: 0;
+            }
+            ul#posts-list li {
+                margin: 5px;
+                padding: 10px;
+                background-color: lightblue;
+            }
+        </style>
+    </head>
+    <body onLoad="app.init()">
+        <div id="fb-root"></div>
+        <ul id="posts-list"></ul>
+        <!-- scripts -->
+        <script>
+            app = {
+                config: {
+                    appId: 186327951505,
+                    groupId: 129300973799511
+                },
+                auth: null,
+                init: function() {
+                    console.log('app.init()', this.config.appId);
+                    this.fbInit();
+                    this.fbLogin();
+                },
+                fbInit: function() {
+                    FB.init({
+                        appId      : this.config.appId, // App ID
+                        //channelURL : '//WWW.YOUR_DOMAIN.COM/channel.html', // Channel File
+                        status     : true, // check login status
+                        cookie     : true, // enable cookies to allow the server to access the session
+                        oauth      : true, // enable OAuth 2.0
+                        xfbml      : true  // parse XFBML
+                    });
+                },
+                fbLogin: function() {
+                    var me = this;
+                    FB.login(function(response) {
+                        console.log(response);
+                        if (response.authResponse) {
+                            me.auth = response.authResponse;
+                            me.run();
+                        } else {
+                            console.log('Login failed');
+                        }
+                    }, {scope: 'user_groups'});
+                },
+                fbLogout: function() {
+                    FB.logout();
+                },
+                getStream: function(callback) {
+                    var me = this;
+                    FB.api([this.config.groupId, 'feed'].join('/'), {limit:10}, function(response) {
+                        if (callback) callback.call(me, response);
+                    });
+                },
+                run: function() {
+                    var me = this;
+                    this.getStream(function(response) {
+                        console.log('run()', response);
+                        response.data.every(function(item) {
+                            var likes = item.likes ? item.likes.count : 0,
+                                comments = item.comments.count;
+                            var text = [
+                                ['(l', likes, '|c', comments, ')'].join(''),
+                                item.message
+                            ].join(' ');
+                            var style = {
+                                'color': 'rgb('+me.util.getWithinRange(likes, 0, 5, 0, 255)+',0,0)',
+                                'font-size': me.util.getWithinRange(comments, 0, 10, 10, 20)+'px'
+                            };
+                            $('#posts-list').append($(['<li style="', style,'">', text,'</li>'].join('')).css(style));
+                            return true;
+                        });
+                    });
+                },
+                util: {
+                    getWithinRange: function(value, iMin, iMax, oMin, oMax) {
+                        var inputRatio = value/(iMax-iMin);
+                        inputRatio = Math.min(inputRatio, 1);
+                        inputRatio = Math.max(inputRatio, 0);
+                        return  inputRatio * (oMax-oMin)+oMin;
+                    }
+                }
+            };
+        </script>
+    </body>
+<html>

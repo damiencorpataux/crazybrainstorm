@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js webgl - geometry - text</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+		<style type="text/css">
+			body {
+				font-family: Monospace;
+				background-color: #000;
+				color: #fff;
+				margin: 0px;
+				/*overflow: hidden;*/
+			}
+		</style>
+	</head>
+	<body onload="init()">
+		<script type="text/javascript" src="js/Three.js"></script>
+
+		<script type="text/javascript" src="js/Detector.js"></script>
+		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+
+		<script type="text/javascript" src="fonts/gentilis_bold.typeface.js"></script>
+		<script type="text/javascript" src="fonts/gentilis_regular.typeface.js"></script>
+		<script type="text/javascript" src="fonts/optimer_bold.typeface.js"></script>
+		<script type="text/javascript" src="fonts/optimer_regular.typeface.js"></script>
+		<script type="text/javascript" src="fonts/helvetiker_bold.typeface.js"></script>
+		<script type="text/javascript" src="fonts/helvetiker_regular.typeface.js"></script>
+		<script type="text/javascript" src="fonts/droid/droid_sans_regular.typeface.js"></script>
+		<script type="text/javascript" src="fonts/droid/droid_sans_bold.typeface.js"></script>
+		<script type="text/javascript" src="fonts/droid/droid_serif_regular.typeface.js"></script>
+		<script type="text/javascript" src="fonts/droid/droid_serif_bold.typeface.js"></script>
+
+        <script>
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+			function init() {
+                // Scene
+                var scene = new THREE.Scene();
+                // Camera
+                var VIEW_ANGLE = 45,
+                    ASPECT = WIDTH / HEIGHT,
+                    NEAR = 0.1,
+                    FAR = 10000;
+                var camera = new THREE.PerspectiveCamera(
+                    VIEW_ANGLE,
+                    ASPECT,
+                    NEAR,
+                    FAR
+                );
+                camera.position.z = 300; // the camera starts at 0,0,0 so pull it back
+                scene.add(camera);
+                // Renderer
+                var WIDTH = window.innerWidth,
+                    HEIGHT = window.innerHeight;
+                var renderer = new THREE.WebGLRenderer();
+                renderer.setSize(WIDTH, HEIGHT);
+				var container = document.createElement( 'div' );
+				document.body.appendChild( container );
+                container.appendChild(renderer.domElement);
+
+                // Creates a Mesh with Material applied Sphere
+                var radius = 50, segments = 16, rings = 16;
+                var sphere = new THREE.Mesh(
+                    new THREE.SphereGeometry(radius,segments,rings),
+                    new THREE.MeshLambertMaterial({ color: 0xCC0000 })
+                );
+                scene.add(sphere);
+
+                // create a point light
+                var pointLight = new THREE.PointLight( 0xFFFFFF );
+                pointLight.position.x = 10;
+                pointLight.position.y = 50;
+                pointLight.position.z = 130;
+                scene.add(pointLight);
+                
+                // draw!
+                renderer.render(scene, camera);
+			}
+        </script>
+	</body>
+</html>
