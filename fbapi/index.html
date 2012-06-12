@@ -33,7 +33,7 @@
                 },
                 auth: null,
                 init: function() {
-                    console.log('app.init()', this.config.appId);
+                    //console.log('app.init()', this.config.appId);
                     this.fbInit();
                     this.fbLogin();
                 },
@@ -50,12 +50,12 @@
                 fbLogin: function() {
                     var me = this;
                     FB.login(function(response) {
-                        console.log(response);
+                        //console.log(response);
                         if (response.authResponse) {
                             me.auth = response.authResponse;
                             me.run();
                         } else {
-                            console.log('Login failed');
+                            //console.log('Login failed');
                         }
                     }, {scope: 'user_groups'});
                 },
@@ -71,7 +71,7 @@
                 run: function() {
                     var me = this;
                     this.getStream(function(response) {
-                        console.log('run()', response);
+                        //console.log('run()', response);
                         response.data.every(function(item) {
                             var likes = item.likes ? item.likes.count : 0,
                                 comments = item.comments.count;
