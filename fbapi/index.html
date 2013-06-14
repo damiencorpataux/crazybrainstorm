@@ -3,7 +3,6 @@
     <head>
         <meta charset=utf-8 />
         <title>cRAZY bRAINSTORM</title>
-        <link rel="stylesheet" type="text/css" media="screen" href="css/master.css" />
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
         <script src="//connect.facebook.net/en_US/all.js"></script>
         <!--[if IE]>
@@ -29,11 +28,14 @@
             app = {
                 config: {
                     appId: 186327951505,
-                    groupId: 129300973799511
+                    groupId: 129300973799511,
+                    limit: null
                 },
                 auth: null,
                 init: function() {
-                    //console.log('app.init()', this.config.appId);
+                    try {
+                        this.config.limit = location.search.match(/limit=(.*)/).pop();
+                    } catch (e) {}
                     this.fbInit();
                     this.fbLogin();
                 },
@@ -64,7 +66,7 @@
                 },
                 getStream: function(callback) {
                     var me = this;
-                    FB.api([this.config.groupId, 'feed'].join('/'), {limit:10}, function(response) {
+                    FB.api([this.config.groupId, 'feed'].join('/'), {limit: this.config.limit}, function(response) {
                         if (callback) callback.call(me, response);
                     });
                 },
